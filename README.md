@@ -22,20 +22,53 @@ It does **not** check security. That stays the job of the AI you connect.
 
 ## Install
 
-- **Windows:** double-click `setup.bat`
-- **macOS:** double-click `setup.command` (run `chmod +x setup.command` once if blocked)
-- **Linux:** `python3 install.py`
+You need [uv](https://docs.astral.sh/uv/) and git on your computer. Nothing else.
+The first run downloads BugScout, later runs start right away.
 
-Then fully restart Claude Desktop. Needs Python 3.10+. Claude Code is registered too.
+### Claude Desktop
 
-Manual setup:
+Add this to `claude_desktop_config.json`, then fully restart the app:
+
+- Windows: `%APPDATA%\Claude\claude_desktop_config.json`
+- macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "bugscout": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/bismaaaa20-cloud/bugscout-mcp",
+        "bugscout-mcp"
+      ]
+    }
+  }
+}
+```
+
+### Claude Code
 
 ```
-pip install mcp
-claude mcp add bugscout -- python /path/to/bugscout_mcp.py --root .
+claude mcp add bugscout -- uvx --from git+https://github.com/bismaaaa20-cloud/bugscout-mcp bugscout-mcp
 ```
 
-Check what is detected on your computer: `python bugscout_mcp.py --doctor`
+### Other apps
+
+Any app that runs local MCP servers works: command `uvx`, arguments
+`--from git+https://github.com/bismaaaa20-cloud/bugscout-mcp bugscout-mcp`.
+
+### Let it read files (optional)
+
+By default only the code the AI sends is checked. To let it check files in a
+folder, add `"--root", "C:/path/to/project"` to `args` (Claude Desktop), or
+`--root .` at the end of the Claude Code command.
+
+Check what is detected on your computer:
+
+```
+uvx --from git+https://github.com/bismaaaa20-cloud/bugscout-mcp bugscout-mcp --doctor
+```
 
 ## Options
 
@@ -51,6 +84,7 @@ Check what is detected on your computer: `python bugscout_mcp.py --doctor`
 
 Findings are heuristics: they can miss bugs and sometimes flag good code.
 Resource limits for checkers apply on macOS and Linux only.
+It runs on your computer, so it does not work in the Claude website or phone app.
 
 ## License
 

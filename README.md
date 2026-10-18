@@ -1,5 +1,4 @@
 # bugscout-mcp
-# BugScout MCP
 
 A quick bug and error checker that an AI runs before handing over your code.
 Bugs only, not a security scanner. Works on Windows, macOS and Linux.

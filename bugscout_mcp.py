@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""BugScout MCP server v5.2: fast bug/error gate for scripts. Runs on Windows, macOS and Linux.
+"""BugScout MCP server v5.3: fast bug/error gate for scripts. Runs on Windows, macOS and Linux.
 Security review is left to the connected AI."""
 
 import argparse
@@ -150,7 +150,7 @@ WIN_ENV_KEYS = {"SYSTEMROOT", "WINDIR", "COMSPEC", "PATHEXT", "PROGRAMFILES", "P
 
 # ---- bug heuristics -------------------------------------------------------------------
 BRACE_LANGS = {"javascript", "typescript", "c", "cpp", "java", "go", "rust", "csharp",
-               "kotlin", "php", "powershell"}
+               "kotlin", "php", "powershell", "brace"}
 LOOP_RX = re.compile(r"\bwhile\s*\(\s*(?:true|True|TRUE|1|\$true|\$True)\s*\)\s*\{|"
                      r"\bfor\s*\(\s*;\s*;\s*\)\s*\{")
 GO_LOOP = re.compile(r"\bfor\s*\{")
@@ -230,6 +230,22 @@ def shebang_language(first):
     return SHEBANG.get(m.group(0)) if m else None
 
 
+def sniff_language(code):
+    """Guess the language from the code itself when no hint, filename or shebang is given."""
+    if re.search(r"^@echo\s+off", code, re.I | re.M):
+        return "batch"
+    if re.search(r"\b(?:Write-Host|Start-Sleep|Get-[A-Z]\w+|Set-[A-Z]\w+)\b|^\s*param\s*\(", code, re.M):
+        return "powershell"
+    if re.search(r"^\s*(?:def\s+\w+\s*\(|class\s+\w+.*:\s*$|import\s+\w+\s*$|from\s+\w+\s+import\s"
+                 r"|elif\s|(?:while|for|if)\b[^\n{]*:\s*$)", code, re.M):
+        return "python"
+    if re.search(r"\bthen\b|\blocal\s+\w+|\bgame:GetService\b", code) and re.search(r"\bend\b", code):
+        return "lua"
+    if re.search(r"[{}]", code):
+        return "brace"  # C-like family: loop checks only, no syntax verdict
+    return "unknown"
+
+
 def detect_language(code, hint="", filename=""):
     hint = hint.strip().lower()
     if hint:
@@ -240,8 +256,8 @@ def detect_language(code, hint="", filename=""):
             return lang
     first = code.splitlines()[0] if code.strip() else ""
     if first.startswith("#!"):
-        return shebang_language(first) or "unknown"
-    return "unknown"
+        return shebang_language(first) or sniff_language(code)
+    return sniff_language(code)
 
 
 # ---- running checkers (Windows, macOS, Linux) -----------------------------------------

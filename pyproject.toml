@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bugscout-mcp"
+version = "0.1.0"
+description = "Quick bug and error checker that an AI runs before handing over your code."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["mcp>=1.9"]
+
+[project.scripts]
+bugscout-mcp = "bugscout_mcp:main"
+
+[tool.setuptools]
+py-modules = ["bugscout_mcp"]

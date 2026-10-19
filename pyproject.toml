@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Quick bug and error checker that an AI runs before handing over your code."
 readme = "README.md"
 requires-python = ">=3.10"
-dependencies = ["mcp>=1.9"]
+dependencies = ["mcp>=1.9,<2"]
 
 [project.scripts]
 bugscout-mcp = "bugscout_mcp:main"

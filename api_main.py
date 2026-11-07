@@ -11,6 +11,12 @@ import zipfile
 from pathlib import PurePosixPath
 from typing import Annotated
 
+from dotenv import load_dotenv
+
+# Load local development settings before reading any environment variables.
+# On Render, dashboard Environment Variables take precedence over this optional file.
+load_dotenv()
+
 from fastapi import Depends, FastAPI, File, Header, HTTPException, UploadFile
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field

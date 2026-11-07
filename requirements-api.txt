@@ -4,3 +4,4 @@ python-multipart>=0.0.9
 # The existing BugScout engine is retained unchanged and currently imports FastMCP.
 # The API speaks REST/OpenAPI; it does not expose MCP transport or MCP tools.
 mcp>=1.9,<2
+python-dotenv>=1.0,<2

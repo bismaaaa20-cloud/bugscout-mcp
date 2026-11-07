@@ -1,0 +1,144 @@
+openapi: 3.1.0
+info:
+  title: BugScout API
+  version: 1.0.0
+  description: BugScout performs heuristic bug and error checks. It is not a security scanner.
+servers:
+  - url: https://YOUR-SERVICE.onrender.com
+security:
+  - BearerAuth: []
+paths:
+  /health:
+    get:
+      operationId: healthCheck
+      summary: Check API availability
+      security: []
+      responses:
+        '200':
+          description: API is healthy
+  /gate/check:
+    post:
+      operationId: gateCheck
+      summary: Quickly check code before delivery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CodeRequest'
+      responses:
+        '200':
+          description: Verdict and blockers or notes
+  /analyze/code:
+    post:
+      operationId: analyzeCode
+      summary: Return a full code analysis report
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CodeRequest'
+      responses:
+        '200':
+          description: Full analysis report
+  /gate/check-file:
+    post:
+      operationId: gateCheckFile
+      summary: Upload and gate-check one source file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Gate result
+  /analyze/file:
+    post:
+      operationId: analyzeFile
+      summary: Upload and fully analyze one source file
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Full file report
+  /analyze/archive:
+    post:
+      operationId: analyzeArchive
+      summary: Analyze source files inside a ZIP archive
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file]
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Multi-file report
+  /languages:
+    get:
+      operationId: supportedLanguages
+      summary: List supported language checkers
+      responses:
+        '200':
+          description: Checker availability
+  /guide:
+    get:
+      operationId: getBugScoutGuide
+      summary: Get BugScout guide
+      responses:
+        '200':
+          description: Guide text
+  /prompts/send-script:
+    post:
+      operationId: getSendScriptPrompt
+      summary: Get the script-writing and recheck prompt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [request]
+              properties:
+                request:
+                  type: string
+      responses:
+        '200':
+          description: Prompt text
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    CodeRequest:
+      type: object
+      required: [code]
+      properties:
+        code:
+          type: string
+        language:
+          type: string
+          default: ""

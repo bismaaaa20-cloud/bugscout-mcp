@@ -19,6 +19,17 @@ Keep the existing `bugscout_mcp.py` and its analysis rules unchanged.
 
 The free Render service may sleep when idle; the first request can be slow.
 
+## Local development with .env
+
+1. Copy `.env.example` to a file named `.env`.
+2. Replace `BUGSCOUT_API_TOKEN` with a random secret of at least 32 characters.
+3. Install the API dependencies: `pip install -r requirements-api.txt`.
+4. Start the API: `uvicorn api_main:app --reload`.
+
+The API loads `.env` automatically for local development. The real `.env` file is ignored by Git; only the placeholder `.env.example` is committed. Never paste a real token into GitHub, chat, or the OpenAPI schema.
+
+For Render, set `BUGSCOUT_API_TOKEN` and other settings in the service's Environment dashboard. Do not upload the local `.env` file to Render.
+
 ## GPT Actions setup
 In the GPT editor, add an Action and import:
 `https://YOUR-SERVICE.onrender.com/openapi.json`

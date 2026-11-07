@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: bugscout-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements-api.txt
+    startCommand: uvicorn api_main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: BUGSCOUT_API_TOKEN
+        generateValue: true
+      - key: BUGSCOUT_ENABLE_COMPILERS
+        value: "false"
+      - key: BUGSCOUT_WORKERS
+        value: "10"

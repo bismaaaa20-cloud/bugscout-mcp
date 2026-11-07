@@ -89,3 +89,14 @@ It runs on your computer, so it does not work in the Claude website or phone app
 ## License
 
 MIT
+
+## Use BugScout with both Claude and ChatGPT
+
+BugScout supports two connection methods while keeping one shared analysis engine:
+
+- **Claude Desktop / Claude Code:** use the existing MCP installation instructions above. The original MCP server and `bugscout-mcp` command remain available.
+- **ChatGPT:** deploy the REST adapter from `api_main.py` and import the deployed `/openapi.json` into a GPT Action. See [README-GPT-ACTIONS.md](README-GPT-ACTIONS.md).
+
+These are two interfaces to the same BugScout checks. The REST adapter does not replace or remove the MCP server. Claude's local MCP setup and ChatGPT's hosted REST Action are configured separately.
+
+Note: the existing local MCP setup runs in Claude Desktop / Claude Code environments that support local MCP servers. It does not by itself connect to the Claude website or mobile app.
